@@ -1,0 +1,8 @@
+[{
+    "_id" : ObjectId("530d1d22be018c1121025be7"),
+    "firstname" : "andrew",
+    "password" : "$2a$10$I79VcQcekEph2qVdue1L4Otc5b5fY2oj//b6XLzRW5iqgKYCiUq4.",
+    "username" : "andrew.keig@gmail.com",
+    "avatar" : ObjectId("530d1d22be018c1121025be6")
+}
+]
