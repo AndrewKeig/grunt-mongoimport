@@ -6,10 +6,10 @@ module.exports = function(grunt) {
         options: {
         host : 'localhost',
         port: '27017',
-        db : 'airasoul',
+        db : 'my-store',
         stopOnError : true,
-        //username : 'username',
-        //password : 'password',
+        username : 'username',
+        password : 'password',
         collections : [
           { 
             name : 'user', 

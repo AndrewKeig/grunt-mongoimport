@@ -32,7 +32,10 @@
   },
   "keywords": [
     "gruntplugin",
-    "mongodb"
+    "grunt",
+    "mongodb",
+    "mongo",
+    "import"
   ],
   "dependencies": {
     "async": "~0.2.10"
