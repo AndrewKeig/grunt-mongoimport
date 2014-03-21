@@ -42,11 +42,11 @@ module.exports = function(grunt) {
           grunt.log.writeln(result.stdout);
           callback();
         });
-      });
       },
       function(err){
         if (err) done(false);
         done();
       }
     );
+  });
 };
