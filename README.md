@@ -79,6 +79,10 @@ Specifies the name of the collection for mongoimport to import.
 json|csv|tsv Declare the type of export format to import 
 ### collection.file
 Specify the location of a file containing the data to import.
+### collection.fields
+Specify a comma separated list of field names when importing csv or tsv files that do not have field names in the first (i.e. header) line of the file.
+### collection.upsertFields
+Specifies a list of fields for the query portion of the upsert. Use this option if the _id fields in the existing documents don’t match the field in the document, but another field or field combination can uniquely identify documents as a basis for performing upsert operations.
 ### collection.jsonArray
 Accept import of data expressed with multiple MongoDB documents within a single JSON array.
 ### collection.upsert
