@@ -12,8 +12,8 @@ module.exports = function(grunt) {
     if (options.db) args.push('--db=' + options.db);
     if (options.host) args.push('--host=' + options.host);
     if (options.port) args.push('--port=' + options.port);
-    if (options.username) args.push('--db=' + options.username);
-    if (options.password) args.push('--db=' + options.password);
+    if (options.username) args.push('--username=' + options.username);
+    if (options.password) args.push('--password=' + options.password);
     if (options.stopOnError) args.push('--stopOnError');
 
     if (collection.name) args.push('--collection=' + collection.name);
