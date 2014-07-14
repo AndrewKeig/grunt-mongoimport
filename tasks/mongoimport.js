@@ -18,6 +18,9 @@ module.exports = function(grunt) {
 
     if (collection.name) args.push('--collection=' + collection.name);
     if (collection.type) args.push('--type=' + collection.type);
+    if (collection.type === 'csv' || collection.type === 'tsv') {
+        if (collection.headerLine) args.push('--headerline');
+    }
     if (collection.file) args.push('--file=' + collection.file);
     if (collection.fields) args.push('--fields=' + collection.fields);
     if (collection.upsertFields) args.push('--upsertFields=' + collection.upsertFields);
