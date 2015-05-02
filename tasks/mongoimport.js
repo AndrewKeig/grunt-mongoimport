@@ -31,12 +31,8 @@ module.exports = function(grunt) {
     var child = grunt.util.spawn({
       cmd: 'mongoimport',
           args: args,
-          opts:
-          { stdio:
-              [ process.stdin
-              , process.stout
-              , process.stderr
-              ]
+          opts: { 
+            stdio: 'inherit'
           }
         },
         function (error, result) {
