@@ -5,7 +5,15 @@ module.exports = function(grunt) {
 
   var done = this.async();
   var options = this.options();
-  
+
+  if (!options) {
+    grunt.warn(new Error('Options not found.', 3));
+  }
+
+  if (!options.collections) {
+    grunt.warn(new Error('Collections option not found.', 3))
+  };
+
   async.eachSeries(options.collections, function(collection, callback){
     var args = [];
 
@@ -31,7 +39,7 @@ module.exports = function(grunt) {
     var child = grunt.util.spawn({
       cmd: 'mongoimport',
           args: args,
-          opts: { 
+          opts: {
             stdio: 'inherit'
           }
         },
