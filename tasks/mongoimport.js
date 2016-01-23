@@ -1,11 +1,24 @@
 var async = require('async');
+var TASK_ERROR = 3;
 
 module.exports = function(grunt) {
   grunt.registerTask("mongoimport", "Grunt task for importing data into mongodb", function() {
 
   var done = this.async();
   var options = this.options();
-  
+
+  if (!options) {
+    grunt.warn(new Error('Options not found.', TASK_ERROR));
+  }
+
+  if (!options.collections) {
+    grunt.warn(new Error('Collections option not found.', TASK_ERROR));
+  }
+
+  if (!Array.isArray(options.collections)) {
+    grunt.warn(new Error('Collections must be an array'), TASK_ERROR);
+  }
+
   async.eachSeries(options.collections, function(collection, callback){
     var args = [];
 
@@ -31,7 +44,7 @@ module.exports = function(grunt) {
     var child = grunt.util.spawn({
       cmd: 'mongoimport',
           args: args,
-          opts: { 
+          opts: {
             stdio: 'inherit'
           }
         },

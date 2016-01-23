@@ -22,39 +22,37 @@ grunt.loadNpmTasks('grunt-mongoimport');
 ### Overview
 In your project's Gruntfile, add a section named `mongoimport` to the data object passed into `grunt.initConfig()`.
 
-```
+``` javascript
 grunt.initConfig({
-  grunt.initConfig({
-    mongoimport: {
-        options: {
-        db : 'my-store',
-        host : 'localhost', //optional
-        port: '27017', //optional
-        username : 'username', //optional
-        password : 'password',  //optional
-        stopOnError : false,  //optional
-        collections : [
-          { 
-            name : 'user', 
-            type : 'json', 
-            file : 'collection/users.json', 
-            jsonArray : true,  //optional
-            upsert : true,  //optional
-            drop : true  //optional
-          }, 
-          { 
-            name : 'media', 
-            type :'json', 
-            file : 'collection/media.json', 
-            jsonArray : true, 
-            upsert : true,
-            drop : true
-          }
-        ]
-      }
+  mongoimport: {
+    options: {
+      db : 'my-store',
+      host : 'localhost', //optional
+      port: '27017', //optional
+      username : 'username', //optional
+      password : 'password',  //optional
+      stopOnError : false,  //optional
+      collections : [
+        {
+          name : 'user',
+          type : 'json',
+          file : 'collection/users.json',
+          jsonArray : true,  //optional
+          upsert : true,  //optional
+          drop : true  //optional
+        },
+        {
+          name : 'media',
+          type :'json',
+          file : 'collection/media.json',
+          jsonArray : true,
+          upsert : true,
+          drop : true
+        }
+      ]
     }
-  });
-})
+  }
+});
 ```
 
 ## Options
@@ -76,7 +74,7 @@ Forces mongoimport to halt the import operation at the first error rather than c
 ### collection.name
 Specifies the name of the collection for mongoimport to import.
 ### collection.type
-json|csv|tsv Declare the type of export format to import 
+json|csv|tsv Declare the type of export format to import
 ### collection.file
 Specify the location of a file containing the data to import.
 ### collection.fields
@@ -89,5 +87,3 @@ Accept import of data expressed with multiple MongoDB documents within a single 
 Modifies the import process to update existing objects in the database if they match an imported object, while inserting all other objects.
 ### collection.drop
 Modifies the import process so that the target instance drops every collection before importing the collection from the input.
-
-
