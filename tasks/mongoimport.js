@@ -140,8 +140,6 @@ module.exports = function(grunt) {
 
                 if (options.drop) {
 
-                    console.log(_getMongoArgsForDrop(collection.name));
-
                     var db = mongoose.connect('mongodb://' + options.host + '/' + options.db, function(err) {
                         if (err) {
                             grunt.log.writeln('Could not connect to mongodb, check if mongo is running');
@@ -149,12 +147,12 @@ module.exports = function(grunt) {
                         } else {
                             grunt.log.writeln('Open db connection');
 
-                            db.connection.db.dropDatabase(function(err) {
+                            mongoose.connection.collection(collection.name).drop(function(err) {
                                 if (err) {
-                                    grunt.log.writeln('Could not drop database');
+                                    grunt.log.writeln('Could not drop collection');
                                     callback(err);
                                 } else {
-                                    grunt.log.writeln('Database dropped');
+                                    grunt.log.writeln('Collection dropped');
                                     _importDocs(grunt, options, collection, callback);
                                 }
                             });
