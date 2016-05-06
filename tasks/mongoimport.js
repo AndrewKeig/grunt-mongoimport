@@ -1,6 +1,7 @@
 var async = require('async');
 var walkSync = require('walk-sync');
 var path = require("path");
+var mongoose = require('mongoose');
 var TASK_ERROR = 3;
 
 var _getArgs = function(options, collection, file) {
@@ -31,6 +32,91 @@ var _getArgs = function(options, collection, file) {
 
 };
 
+var _getMongoArgsForDrop = function(collection_name) {
+
+
+
+
+    var args = [];
+
+    args.push(collection_name);
+    args.push('--eval "db.dropDatabase()"')
+
+    return args;
+};
+
+var _importDocs = function(grunt, options, collection, callback) {
+
+    if (collection.folder) {
+
+        var files = walkSync(collection.folder)
+
+        async.eachSeries(files, function(file, cb) {
+
+            if (path.extname(file) === ".json") {
+
+                file = collection.folder + "/" + file;
+
+                var args = _getArgs(options, collection, file);
+
+                var child = grunt.util.spawn({
+                        cmd: 'mongoimport',
+                        args: args,
+                        opts: {
+                            stdio: 'inherit'
+                        }
+                    },
+                    function(error, result) {
+
+                        if (error) {
+                            grunt.log.error(result.stderr);
+                            cb();
+                        }
+
+
+                        grunt.log.writeln("Imported file: %s", file);
+                        cb();
+                    });
+
+            } else {
+
+
+                cb();
+
+            }
+
+        }, function(err) {
+
+            callback();
+
+        })
+
+
+    } else if (collection.file) {
+
+        var args = _getArgs(collection, collection.file);
+
+        var child = grunt.util.spawn({
+                cmd: 'mongoimport',
+                args: args,
+                opts: {
+                    stdio: 'inherit'
+                }
+            },
+            function(error, result) {
+                if (error) {
+                    grunt.log.error(result.stderr);
+                    callback();
+                }
+                grunt.log.writeln(result.stdout);
+                callback();
+            });
+
+    }
+
+
+}
+
 module.exports = function(grunt) {
 
     grunt.registerTask("mongoimport", "Grunt task for importing data into mongodb", function() {
@@ -52,70 +138,32 @@ module.exports = function(grunt) {
 
         async.eachSeries(options.collections, function(collection, callback) {
 
-                if (collection.folder) {
+                if (options.drop) {
 
-                    var files = walkSync(collection.folder)
+                    console.log(_getMongoArgsForDrop(collection.name));
 
-                    async.eachSeries(files, function(file, cb) {
-
-                        if (path.extname(file) === ".json") {
-
-                            file = collection.folder + "/" + file;
-
-                            var args = _getArgs(options, collection, file);
-
-                            var child = grunt.util.spawn({
-                                    cmd: 'mongoimport',
-                                    args: args,
-                                    opts: {
-                                        stdio: 'inherit'
-                                    }
-                                },
-                                function(error, result) {
-
-                                    if (error) {
-                                        grunt.log.error(result.stderr);
-                                        cb();
-                                    }
-
-
-                                    grunt.log.writeln("Imported file: %s", file);
-                                    cb();
-                                });
-
+                    var db = mongoose.connect('mongodb://' + options.host + '/' + options.db, function(err) {
+                        if (err) {
+                            grunt.log.writeln('Could not connect to mongodb, check if mongo is running');
+                            callback(err);
                         } else {
+                            grunt.log.writeln('Open db connection');
 
-
-                            cb();
-
+                            db.connection.db.dropDatabase(function(err) {
+                                if (err) {
+                                    grunt.log.writeln('Could not drop database');
+                                    callback(err);
+                                } else {
+                                    grunt.log.writeln('Database dropped');
+                                    _importDocs(grunt, options, collection, callback);
+                                }
+                            });
                         }
+                    });
 
-                    }, function(err) {
+                } else {
 
-                        callback();
-
-                    })
-
-
-                } else if (collection.file) {
-
-                    var args = _getArgs(collection, collection.file);
-
-                    var child = grunt.util.spawn({
-                            cmd: 'mongoimport',
-                            args: args,
-                            opts: {
-                                stdio: 'inherit'
-                            }
-                        },
-                        function(error, result) {
-                            if (error) {
-                                grunt.log.error(result.stderr);
-                                callback();
-                            }
-                            grunt.log.writeln(result.stdout);
-                            callback();
-                        });
+                    _importDocs(grunt, options, collection, callback);
 
                 }
 

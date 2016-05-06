@@ -39,6 +39,7 @@
   ],
   "dependencies": {
     "async": "~0.2.10",
+    "mongoose": "^4.4.15",
     "path": "^0.12.7",
     "walk-sync": "^0.2.6"
   }
