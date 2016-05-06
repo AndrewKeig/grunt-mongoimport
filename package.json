@@ -38,6 +38,8 @@
     "import"
   ],
   "dependencies": {
-    "async": "~0.2.10"
+    "async": "~0.2.10",
+    "path": "^0.12.7",
+    "walk-sync": "^0.2.6"
   }
 }
