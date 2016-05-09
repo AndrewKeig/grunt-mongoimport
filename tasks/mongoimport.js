@@ -26,23 +26,11 @@ var _getArgs = function(options, collection, file) {
     if (collection.upsert) args.push('--upsert');
     if (collection.drop) args.push('--drop');
 
+
     args.push('--file=' + file);
 
     return args;
 
-};
-
-var _getMongoArgsForDrop = function(collection_name) {
-
-
-
-
-    var args = [];
-
-    args.push(collection_name);
-    args.push('--eval "db.dropDatabase()"')
-
-    return args;
 };
 
 var _importDocs = function(grunt, options, collection, callback) {
@@ -145,23 +133,36 @@ module.exports = function(grunt) {
                             grunt.log.writeln('Could not connect to mongodb, check if mongo is running');
                             callback(err);
                         } else {
+
                             grunt.log.writeln('Open db connection');
 
-                            mongoose.connection.collection(collection.name).drop(function(err) {
-                                if (err) {
-                                    grunt.log.writeln('Could not drop collection');
-                                    callback(err);
-                                } else {
-                                    grunt.log.writeln('Collection dropped');
-                                    _importDocs(grunt, options, collection, callback);
-                                }
-                            });
+                            mongoose.connection.db.listCollections({
+                                name: collection.name
+                            })
+                                .next(function(err, collinfo) {
+                                    if (collinfo) {
+                                        // The collection exists
+
+                                        mongoose.connection.collection(collection.name).drop(function(err) {
+                                            if (err) {
+                                                grunt.log.writeln('Could not drop collection');
+                                                callback(err);
+                                            } else {
+
+                                                grunt.log.writeln('Collection dropped');
+                                                _importDocs(grunt, options, collection, callback);
+                                            }
+                                        });
+                                    } else {
+
+                                        _importDocs(grunt, options, collection, callback);
+
+                                    }
+                                });
+
+
                         }
                     });
-
-                } else {
-
-                    _importDocs(grunt, options, collection, callback);
 
                 }
 
